@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<context:annotation-config/>
+	<!-- все бины, у которых есть соответствующие аннотации превращаются в бины АВТОМАТИЧЕСКИ -->
+	<context:component-scan base-package="ru.javabegin.training.spring" />
+	
+	
+	
+	<!-- включить аннотации. Перед этим включить contexts в Namespaces -->
+	<!-- <context:annotation-config/>
+	<bean id="t1000" class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+		scope="prototype"/>
+		
+	<bean id="sonyHead1" class="ru.javabegin.training.spring.impls.sony.SonyHead">
+		<property name="color" value="golden"/> -->
+		<!-- qualifier - имя для поиска этого бина в аннотации. Если есть, то можно убрать айди -->
+		<!-- <qualifier value="sonyGoldenHead"></qualifier>
+	</bean>
+	
+	<bean id="sonyHead2" class="ru.javabegin.training.spring.impls.sony.SonyHead">
+		<property name="color" value="bronze"/>
+		<qualifier value="sonyBronzeHead"></qualifier>
+	</bean>
+	 -->
+	<!-- для всех бинов будут такие destroy и init методы(если выше указать)
+	default-init-method="initObject"
+	default-destroy-method="destroyObject"
+	default-lazy-init="true" - lazy init
+	 -->
+
+	<!-- через "p" можно писать пропертис, если подключить класс(см выше в обьявлении).
+		prototype - каждый раз, когда будем вызывать .getBean, будет создаваться НОВЫЙ объект
+		Если убрать scope, то .getBean будет возвращать ОДИН и тот же объект:
+			ModelT1000 t1000 = (ModelT1000) context.getBean("t1000");
+			t1000 = (ModelT1000) context.getBean("t1000");
+		init и destroy-методы отрабатывают при создании и уничтожении бинов
+		lazy-init - чтобы при создании первого бина не срабатывал init и на этом,
+		и он не занимал память. т.к. по-умолчанию он срабатывает для всех описанных,
+		depends-on - создасться только ПОСЛЕ инициализации databaseBean
+		parent="baseModel" - унаследовать все, что имеет baseModel -->
+	<!-- <bean id="t1000"
+		class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+		
+		p:hand-ref="toshibaHand"
+		p:leg-ref="sonyLeg"
+		p:head-ref="sonyHead"
+		
+		init-method="initObject"
+		destroy-method="destroyObject"
+		
+		scope="prototype"
+		lazy-init="true"
+		depends-on="databaseBean"
+		> -->
+		<!-- должно соответствовать конструктору, index - если указываем ЗДЕСЬ не по порядку.
+			type - по желанию 
+		<constructor-arg ref="sonyHand"/>
+		<constructor-arg ref="sonyLeg"/>
+		<constructor-arg ref="sonyHead"/> -->
+		<!-- <constructor-arg value="silver" index="0" type="String"/>
+		<constructor-arg value="2006" index="1" type="int"/>
+		<constructor-arg value="true" index="2" type="boolean"/> -->
+		
+		<!-- Не смотря на то, что можно и так и так, property в приоритете.
+			Потому что это get/setters, и мы НАЗНАЧАЕМ новые значения после создания -->
+		<!-- <property name="hand" ref="toshibaHand"/> -->
+		<!-- <property name="head" ref="toshibaHead"/> -->
+		<!-- <property name="leg" ref="toshibaLeg"/> -->
+	<!-- </bean> -->
+	
+	<!-- autowire="byType" - автоматическое связывание. Уже не надо
+		прописывать constructor-arg, он сам найдет, что можно внедрить туда.
+		НО! если есть несколько подходящих бинов - будет ошибка.
+		Чтобы такого не было:
+			autowire-candidate="false" - пооставить для тех бинов, которые
+			НЕ надо автоматически связывать.
+		autowire="byName" - будут браться ИМЕНА свойств из класса и искаться
+			бины с такими же именами -->
+	<!-- <bean id="t1000c" class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+	parent="baseModel" scope="prototype" autowire="byType">
+	</bean> -->
+	
+	
+	<!-- приписка "Empty" не обязательно, но для нас значит, что будет использоваться конструктор БЕЗ обьектов. только тот, что с примитивными типами -->
+	<!-- <bean id="t1000Empty"
+		class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+		lazy-init="true"
+		parent="baseModel" >
+
+		<constructor-arg value="silver" index="0" type="String"/>
+		<constructor-arg value="2006" index="1" type="int"/>
+		<constructor-arg value="true" index="2" type="boolean"/>
+
+	</bean> -->
+	
+	<!-- указываем, что бин - как абстрактный класс. И его уже наследуем.
+	Можно и без abstract. наследует только свойства и конструкторы, но не методы -->
+	<!-- <bean id="baseModel" abstract="true">
+	
+		<constructor-arg ref="sonyHand" index="0"/>
+		<constructor-arg ref="sonyLeg" index="1"/>
+		<constructor-arg ref="sonyHead" index="2"/>
+	</bean>
+
+	<bean id="sonyHead"
+		class="ru.javabegin.training.spring.impls.sony.SonyHead"/>
+	<bean id="sonyHand"
+		class="ru.javabegin.training.spring.impls.sony.SonyHand"/>
+	<bean id="sonyLeg"
+		class="ru.javabegin.training.spring.impls.sony.SonyLeg"/>
+	
+	<bean id="toshibaHead"
+		class="ru.javabegin.training.spring.impls.toshiba.ToshibaHead"/>
+	<bean id="toshibaHand"
+		class="ru.javabegin.training.spring.impls.toshiba.ToshibaHand"/>
+	<bean id="toshibaLeg"
+		class="ru.javabegin.training.spring.impls.toshiba.ToshibaLeg"/>
+		
+	<bean class="ru.javabegin.training.spring.main.MyBeanPostProcessor">
+	</bean>
+	
+	<bean id="databaseBean" class="ru.javabegin.training.spring.impls.Database"/>
+	
+	<bean id="t1000a" class="ru.javabegin.training.spring.impls.robot.ModelT1000" parent="baseModel" scope="prototype">
+
+		<constructor-arg value="silver" index="3" type="String" />
+		<constructor-arg value="2005" index="4" type="int" />
+		<constructor-arg value="true" index="5" type="boolean" />		
+
+	</bean>
+	
+	<bean id="actionReplacer" class="ru.javabegin.training.spring.impls.robot.ActionReplacer" />
+	 -->
+			<!-- передать в абстрактный метод createRobot(абстрактного класса T1000Conveyor)
+			значение t1000a.
+			теперь вызов метода createRobot будет создавать новый экземпляр
+			T1000a, т.к. он - prototype -->
+		<!-- <lookup-method name="createRobot" bean="t1000a" /> -->
+		<!-- заменить метод action на actionReplacer -->
+	<!-- <bean id="t1000Conveyer" class="ru.javabegin.training.spring.impls.conveyer.T1000Conveyer">
+		<replaced-method name="action" replacer="actionReplacer" />
+	</bean> -->
+	
+	<!-- property - куда мы хотим записать значение(setter для переменной
+		коллекции robotCollection).
+	list - тип коллекции
+	ref - записать в коллекцию готовый бин.
+	bean - создаем новый бин, который помещаем в коллекцию -->
+	<!-- <bean id="t1000Pool" class="ru.javabegin.training.spring.impls.pool.T1000Pool">
+		<property name="robotCollection"> -->
+		<!-- передать null там, где нужно передать значение. -->
+		<!-- <null/> -->
+		<!-- <list>
+				<ref bean="t1000" />
+				
+				<bean class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+					parent="baseModel">
+
+					<constructor-arg value="gold" index="3" type="String" />
+					<constructor-arg value="2007" index="4" type="int" />
+					<constructor-arg value="false" index="5" type="boolean" />
+				</bean>
+				
+				
+			</list>
+		</property>
+	</bean>
+	-->
+	 
+	<!-- для Map
+	<bean id="t1000Pool" class="ru.javabegin.training.spring.impls.pool.T1000Pool">
+		<constructor-arg name="robotCollection">
+			<map>
+				<entry key="2005" value-ref="t1000" />
+				<entry key="2006" value-ref="t1000" />
+				<entry key="2005">
+					<bean class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+						parent="baseModel">
+
+						<constructor-arg value="gold" index="3" type="String" />
+						<constructor-arg value="2007" index="4" type="int" />
+						<constructor-arg value="false" index="5" type="boolean" />
+					</bean>
+				</entry>
+
+			</map>
+		</constructor-arg>
+	</bean>
+	
+	-->
+	
+	<!-- 
+	<bean id="t1000Pool" class="ru.javabegin.training.spring.impls.pool.T1000Pool">
+		<constructor-arg name="robotCollection">
+			<list>
+				<ref bean="t1000" />
+
+				<bean class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+					parent="baseModel">
+
+					<constructor-arg value="gold" index="3" type="String" />
+					<constructor-arg value="2007" index="4" type="int" />
+					<constructor-arg value="false" index="5" type="boolean" />
+				</bean>
+
+				<bean class="ru.javabegin.training.spring.impls.robot.ModelT1000"
+					parent="baseModel">
+
+					<constructor-arg value="gold" index="3" type="String" />
+					<constructor-arg value="2009" index="4" type="int" />
+					<constructor-arg value="true" index="5" type="boolean" />
+				</bean>
+
+
+			</list>
+		</constructor-arg>
+	</bean>
+ -->
+	<!-- Создаем бин
+	получить у robotCollection значения, у которых свойство color
+		в АППЕРКЕЙС равно GOLD -->
+	<!-- <bean id="t1000ColdenPool" class="ru.javabegin.training.spring.impls.pool.T1000Pool">
+		<constructor-arg name="robotCollection"
+			value="#{t1000Pool.robotCollection.?[color.toUpperCase() eq 'GOLD']}">
+		</constructor-arg>
+	</bean> -->
+	
+	
+	<!-- import файла, содержащего бины. Часто разделяются по конфигурациям, а не по объектам. Напр, для работы с базой, для работы с вебом и т.д.
+	<import resource="t1000_context.xml" />
+	то же самое можно делать и в pom.xml -->
+</beans>

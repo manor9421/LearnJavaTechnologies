@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="Bird" class="com.mnr.animals.Bird"
+		init-method="birdInit"
+		destroy-method="birdDestroy"
+		lazy-init="true"
+		scope="singleton"
+	>
+		<constructor-arg value="Chicken" index="0" type="String"/>
+		<constructor-arg value="2" index="1" type="int"/>
+		<constructor-arg value="false" index="2" type="boolean"/>
+	</bean>
+
+</beans>

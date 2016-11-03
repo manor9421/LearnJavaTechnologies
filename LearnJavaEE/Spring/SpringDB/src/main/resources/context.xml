@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+	<context:component-scan base-package="ru.javabegin.training.spring.*" />
+<!-- 	<aop:aspectj-autoproxy proxy-target-class="true" /> -->
+	<import resource="transactions.xml" />
+
+
+	<!-- для начала вкулючить tx в Namespaces -->
+<!-- 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" /> -->
+
+<!-- 	 Прописываем настройки соединения -->
+<!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="org.sqlite.JDBC" /> -->
+<!-- 		<property name="url" value="jdbc:sqlite:db/SpringDB.db" /> -->
+<!-- 		<property name="username" value="" /> -->
+<!-- 		<property name="password" value="" /> -->
+<!-- 	</bean> -->
+
+<!-- 	создаем Transaction Manager -->
+<!-- 	<bean id="transactionManager" -->
+<!-- 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> -->
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+<!-- 	</bean> -->
+
+<!-- 	 объявление Transaction Advice - совета транзакций -->
+<!-- 	<tx:advice id="adviceTransaction" transaction-manager="transactionManager"> -->
+<!-- 		<tx:attributes> -->
+<!-- 			указываем аттрибуты транзакций -->
+<!-- 			<tx:method name="insert*" propagation="REQUIRED" read-only="false" 	isolation="SERIALIZABLE" /> -->
+<!-- 		</tx:attributes> -->
+<!-- 	</tx:advice> -->
+<!-- 	 указываем точки сопряжения -->
+<!-- 	<aop:config> -->
+<!-- 		<aop:advisor pointcut="execution(* ru.javabegin.training.spring.dao.impls.*.*(..))" advice-ref="adviceTransaction" /> -->
+<!-- 	</aop:config> -->
+
+
+<import resource="transactions.xml" />
+
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+
+	<aop:config>
+		<aop:aspect id="aspectCheckTransaction" ref="checkTransaction">
+			<aop:pointcut expression="execution(* ru.javabegin.training.spring.dao.impls.*.insert*(..))" id="insertMethods" />
+			<aop:before pointcut-ref="insertMethods" method="checkTransactionActive" />
+		</aop:aspect>
+	</aop:config>
+
+</beans>

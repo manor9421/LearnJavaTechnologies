@@ -1,0 +1,46 @@
+
+body {
+}
+
+.headerWrapper {
+	margin: -5px -5px 0 -5px;
+	text-align: center;
+}
+
+.header {
+	position: relative;
+	margin: 0 auto;
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+.content {  
+	top: 20px;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background: white;
+	padding: 5px;
+}
+
+
+#footer {
+	position: relative;
+	top: 50px;
+	width: 90%;
+	background-color: white;
+	text-align: left;
+	border-top: 1px solid gray;
+	height: 30px;
+	margin-left: 5%;
+	font-size: 11px;
+	color: gray;
+}
+
+.book_div{
+	border: 1px solid orange;
+	margin: 5px;
+	padding: 3px;
+}
+
